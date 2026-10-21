@@ -29,7 +29,7 @@ function loadScript(rel, extra = {}) {
 /* 1. required files                                                   */
 /* ------------------------------------------------------------------ */
 const required = [
-  'index.html', 'README.md', 'AGENTS.md', 'package.json', 'package-lock.json',
+  'index.html', 'README.md', 'DEVELOPER_GUIDE.md', 'AGENTS.md', 'package.json', 'package-lock.json',
   '.gitignore', '.gitattributes', '.githooks/pre-commit',
   '.github/workflows/ci.yml',
   'scripts/serve.mjs', 'scripts/setup.mjs', 'scripts/test-static.mjs', 'scripts/test-e2e.mjs',
@@ -233,6 +233,12 @@ for (const id of fragmentIds) check(usedFragments.has(id), `fragment "${id}" has
 /* ------------------------------------------------------------------ */
 /* 5. docs / screenshots / save API                                    */
 /* ------------------------------------------------------------------ */
+const guide = read('DEVELOPER_GUIDE.md');
+check(guide.includes('npm run setup') && guide.includes('npm test') && guide.includes('git commit'),
+  'DEVELOPER_GUIDE.md must document setup, test and commit commands');
+check(guide.includes('https://kejunfang.github.io/LastStation-Deepseek/'),
+  'DEVELOPER_GUIDE.md must mention the deployed play URL');
+
 const agents = read('AGENTS.md');
 check(agents.includes('### 规则 0：每个任务开始前，自动运行 karpathy-guidelines skill'),
   'AGENTS.md must keep the task-start rule for karpathy-guidelines');
@@ -240,6 +246,10 @@ check(agents.includes('`skill` 工具加载 `karpathy-guidelines`'),
   'AGENTS.md must require actually loading the karpathy-guidelines skill');
 check(/karpathy-guidelines/.test(read('README.md')),
   'README.md should mention the task-start karpathy-guidelines gate');
+check(read('README.md').includes('https://kejunfang.github.io/LastStation-Deepseek/'),
+  'README.md must put the live GitHub Pages play URL at the top');
+check(read('README.md').includes('DEVELOPER_GUIDE.md'),
+  'README.md must link the developer guide');
 
 const readme = read('README.md');
 for (const m of readme.matchAll(/!\[[^\]]*\]\(([^)]+)\)/g)) {

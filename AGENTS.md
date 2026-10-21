@@ -75,6 +75,8 @@ npm test passes (static + browser smoke).
 
 不要把它改成 React/Vue/打包工程，除非用户明确要求。
 
+> 面向人类开发者的逐步教学（配置、改剧情、改画面、部署 GitHub Pages）见 [DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md)。
+
 ---
 
 ## 2. 技术架构
