@@ -134,6 +134,8 @@ python3 -m http.server 8000
 
 仓库内置了完整的项目协议、静态检查和浏览器 smoke test。
 
+环境要求：Node.js >= 20。`test:e2e` 优先使用本机 Chrome；没有 Chrome 时先执行 `npx playwright install chromium`。
+
 ```bash
 npm install       # 只安装 Playwright 测试依赖；游戏本身零依赖
 npm run setup     # 启用 .githooks/pre-commit（每个 clone 一次）
