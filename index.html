@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#060a12">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23070c14'/%3E%3Cpath d='M27 55h10l3-35H24z' fill='%23d9d3c4'/%3E%3Crect x='23' y='15' width='18' height='7' fill='%23a55048'/%3E%3Crect x='27' y='24' width='10' height='9' fill='%23ffdca6'/%3E%3Crect x='26' y='12' width='12' height='4' fill='%23e8bd82'/%3E%3C/svg%3E">
+<title>灯塔不眠 · The Lighthouse Never Sleeps</title>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/title.css">
+<link rel="stylesheet" href="css/game.css">
+<link rel="stylesheet" href="css/overlays.css">
+</head>
+<body>
+<div id="viewport">
+  <div id="stage" aria-live="polite">
+
+    <!-- ===== world ===== -->
+    <canvas id="bg-canvas" width="640" height="360"></canvas>
+    <div id="bg-wash"></div>
+    <div id="grain"></div>
+    <div id="vignette"></div>
+
+    <!-- ===== characters ===== -->
+    <div id="cast">
+      <div class="cast-slot" data-slot="left"><canvas width="360" height="540"></canvas></div>
+      <div class="cast-slot" data-slot="center"><canvas width="360" height="540"></canvas></div>
+      <div class="cast-slot" data-slot="right"><canvas width="360" height="540"></canvas></div>
+    </div>
+
+    <!-- ===== title ===== -->
+    <section id="screen-title" class="screen">
+      <div class="title-edge" aria-hidden="true">
+        <span class="title-jp">灯台は眠らない</span>
+      </div>
+      <div class="title-top">
+        <span class="title-mark">SHIOMI · 08</span>
+        <span class="title-top-quote">a story about the light we leave behind</span>
+      </div>
+
+      <div class="title-main">
+        <p class="title-kicker">A SEASIDE VISUAL NOVEL</p>
+        <h1 class="title-cn">灯塔不眠</h1>
+        <p class="title-en">THE LIGHTHOUSE NEVER SLEEPS</p>
+        <div class="title-rule"></div>
+        <p class="title-tagline">「十年了，我还在等那束光。」</p>
+        <p class="title-credit">汐见町 · 最后一个夏天</p>
+      </div>
+
+      <nav id="title-menu" aria-label="主菜单">
+        <button class="menu-item" data-action="new">
+          <span class="mi-index">01</span>
+          <span class="mi-label">新游戏<em>New Game</em></span>
+        </button>
+        <button class="menu-item" data-action="continue">
+          <span class="mi-index">02</span>
+          <span class="mi-label">继续<em>Continue</em><span class="mi-note" id="continue-note"></span></span>
+        </button>
+        <button class="menu-item" data-action="load">
+          <span class="mi-index">03</span>
+          <span class="mi-label">读档<em>Load</em></span>
+        </button>
+        <button class="menu-item" data-action="memories">
+          <span class="mi-index">04</span>
+          <span class="mi-label">记忆<em>Memories</em><span class="mi-count" id="frag-count">0/8</span></span>
+        </button>
+        <button class="menu-item" data-action="endings">
+          <span class="mi-index">05</span>
+          <span class="mi-label">结局<em>Endings</em><span class="mi-count" id="end-count">0/4</span></span>
+        </button>
+        <button class="menu-item" data-action="settings">
+          <span class="mi-index">06</span>
+          <span class="mi-label">设置<em>Settings</em></span>
+        </button>
+      </nav>
+
+      <div class="title-bottom">
+        <div class="title-hint">点击任意处唤醒声音 · 建议佩戴耳机</div>
+        <div class="title-version">ver 1.0 &nbsp;·&nbsp; original story &amp; code</div>
+      </div>
+      <div id="ngplus-badge" class="ngplus hidden">✦ 第二个夏天 ✦</div>
+    </section>
+
+    <!-- ===== game ===== -->
+    <section id="screen-game" class="screen hidden">
+      <div id="chapter-tag"></div>
+
+      <div id="quickbar" class="hidden">
+        <button class="qb" data-action="backlog">记录</button>
+        <button class="qb" data-action="auto" id="qb-auto">自动</button>
+        <button class="qb" data-action="skip" id="qb-skip">快进</button>
+        <button class="qb" data-action="save">存档</button>
+        <button class="qb" data-action="load">读档</button>
+        <button class="qb" data-action="notebook">手记</button>
+        <button class="qb" data-action="settings">设置</button>
+        <button class="qb" data-action="menu">菜单</button>
+      </div>
+
+      <div id="dialogue-wrap" class="hidden">
+        <div id="speaker" class="hidden"><span id="speaker-name"></span><span id="speaker-en"></span></div>
+        <div id="dialogue">
+          <div id="dialogue-text" aria-live="polite"></div>
+          <div id="next-mark" class="hidden"></div>
+          <div id="line-deco" aria-hidden="true"><span></span><span></span><span></span></div>
+        </div>
+      </div>
+
+      <div id="choices" class="hidden">
+        <div id="choice-list"></div>
+        <p id="choice-hint">选择，然后承担它。</p>
+      </div>
+
+      <div id="hud-bond" class="hidden">
+        <span class="flame"></span><span id="bond-num">0</span>
+      </div>
+
+      <div id="toast"></div>
+      <div id="flash"></div>
+      <div id="shake-wrap"></div>
+    </section>
+
+    <!-- ===== cinematic overlays ===== -->
+    <div id="chapter-card" class="hidden">
+      <div class="cc-inner">
+        <p class="cc-no" id="cc-no">CH. 01</p>
+        <h2 id="cc-title">归港</h2>
+        <p class="cc-sub" id="cc-sub">The sea remembers.</p>
+      </div>
+    </div>
+
+    <div id="ending-card" class="hidden">
+      <div class="ec-inner">
+        <p class="ec-no" id="ec-no">ENDING A</p>
+        <h2 id="ec-title">长夜</h2>
+        <p class="ec-epi" id="ec-epi"></p>
+        <div class="ec-rule"></div>
+        <p class="ec-desc" id="ec-desc"></p>
+        <button class="ec-return" id="ec-return">返回标题 <span>Return</span></button>
+        <p class="ec-hint" id="ec-hint"></p>
+      </div>
+    </div>
+
+    <div id="fade" class="hidden"></div>
+    <div id="overlay" class="hidden"></div>
+    <div id="boot"><span>LIGHTHOUSE</span></div>
+  </div>
+</div>
+
+<div id="rotate-hint" class="hidden">请横屏游玩</div>
+
+<script src="js/art/pixel.js"></script>
+<script src="js/art/backgrounds.js"></script>
+<script src="js/art/characters.js"></script>
+<script src="js/util.js"></script>
+<script src="js/save.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/state.js"></script>
+<script src="js/story.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/minigames.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
