@@ -7,6 +7,14 @@
 
 ## 0. 硬性规则（不可跳过）
 
+### 规则 0：每个任务开始前，自动运行 karpathy-guidelines skill
+
+- 每次收到一个新的用户任务，在做任何文件修改、执行命令、制定实现计划之前，**必须自动调用 `skill` 工具加载 `karpathy-guidelines`**。不需要用户提醒。
+- 加载后按它的四条工作：Think Before Coding（先陈述假设与多种解释）、Simplicity First（最小实现）、Surgical Changes（只改必须改的）、Goal-Driven Execution（定义可验证的成功标准并循环验证）。
+- 如果在当前环境中没有 `skill` 工具、或该 skill 不可用：先读取 `~/.agents/skills/karpathy-guidelines/SKILL.md`，或当前 agent 的 skills 目录中的同名文件，并按同样内容工作；如果仍然无法获得，必须明确报告阻塞并停止，不得跳过。
+- 同一任务内的后续修改不要求重复加载；**新的用户任务**必须重新运行一次。
+- 这是任务启动门禁，与规则 2 的提交测试门禁相互独立，二者都不能省略。
+
 ### 规则 1：每完成一个变更，立刻提交一次
 
 - 一次「变更」= 一个连贯的功能、修复或文档更新，不是每敲一行代码。
@@ -199,6 +207,9 @@ python3 -m http.server 8000
 每次工作循环：
 
 ```bash
+# 0. 新任务：先加载并执行 karpathy-guidelines skill
+#    （同一任务内的后续提交不重复）
+
 # 1. 明确一个变更
 git status --short
 
@@ -287,6 +298,7 @@ git status --short
 
 提交前逐项确认：
 
+- [ ] **任务开始时已运行 `karpathy-guidelines` skill**（或记录其不可用的具体原因）。
 - [ ] 只包含一个逻辑变更，没有顺手夹带无关修改。
 - [ ] `npm test` 全绿（static + e2e）。
 - [ ] 新剧情/新分支的场景目标、碎片、结局都被静态测试覆盖。

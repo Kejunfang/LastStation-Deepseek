@@ -233,6 +233,14 @@ for (const id of fragmentIds) check(usedFragments.has(id), `fragment "${id}" has
 /* ------------------------------------------------------------------ */
 /* 5. docs / screenshots / save API                                    */
 /* ------------------------------------------------------------------ */
+const agents = read('AGENTS.md');
+check(agents.includes('### 规则 0：每个任务开始前，自动运行 karpathy-guidelines skill'),
+  'AGENTS.md must keep the task-start rule for karpathy-guidelines');
+check(agents.includes('`skill` 工具加载 `karpathy-guidelines`'),
+  'AGENTS.md must require actually loading the karpathy-guidelines skill');
+check(/karpathy-guidelines/.test(read('README.md')),
+  'README.md should mention the task-start karpathy-guidelines gate');
+
 const readme = read('README.md');
 for (const m of readme.matchAll(/!\[[^\]]*\]\(([^)]+)\)/g)) {
   const rel = m[1].replace(/^<|>$/g, '');

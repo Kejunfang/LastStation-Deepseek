@@ -134,6 +134,9 @@ python3 -m http.server 8000
 
 仓库内置了完整的项目协议、静态检查和浏览器 smoke test。
 
+> Agent 任务门禁：每个**新的用户任务**开始前，必须先自动加载并执行 `karpathy-guidelines` skill，再进入修改 → `npm test` → commit 流程。详见 [AGENTS.md](AGENTS.md) 的「规则 0」。
+
+
 环境要求：Node.js >= 20。`test:e2e` 优先使用本机 Chrome；没有 Chrome 时先执行 `npx playwright install chromium`。
 
 ```bash
